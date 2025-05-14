@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <title>Consulta Jogador Roblox - Rolimon's API</title>
+</head>
+<body>
+  <h1>Consulta Jogador Roblox - Rolimon's API</h1>
+
+  <label for="userId">Digite o ID do jogador Roblox:</label>
+  <input type="number" id="userId" placeholder="Ex: 261" />
+  <button id="btnBuscar">Buscar</button>
+
+  <div id="resultado" style="margin-top:20px;"></div>
+
+  <script>
+    document.getElementById('btnBuscar').addEventListener('click', () => {
+      const userId = document.getElementById('userId').value.trim();
+      const resultado = document.getElementById('resultado');
+      resultado.innerHTML = 'Buscando...';
+
+      if (!userId) {
+        resultado.innerHTML = 'Por favor, digite um ID válido.';
+        return;
+      }
+
+      fetch(`https://www.rolimons.com/api/player/${userId}`)
+        .then(res => {
+          if (!res.ok) throw new Error('Jogador não encontrado ou erro na API');
+          return res.json();
+        })
+        .then(data => {
+          // Exemplo de dados retornados: username, value, rank, etc
+          resultado.innerHTML = `
+            <p><strong>Nome:</strong> ${data.username}</p>
+            <p><strong>Valor Total:</strong> ${data.value.toLocaleString()}</p>
+            <p><strong>Rank:</strong> ${data.rank}</p>
+            <p><strong>R$ Estimados:</strong> ${data.robuxValue.toLocaleString()}</p>
+          `;
+        })
+        .catch(err => {
+          resultado.innerHTML = `Erro: ${err.message}`;
+        });
+    });
+  </script>
+</body>
+</html>
